@@ -1,6 +1,5 @@
 # Chess-3d
-Copyright 2022 Steven Mycynek -- portions (c) 2012 kanda and matsuda
-Wood texture by Augustine Wong: https://unsplash.com/@augustinewong
+Copyright 2022 Steven Mycynek
 
 ## Basics
 This is the first project I made based off of my WebGL starter template:
@@ -29,3 +28,8 @@ a good-enough state to post the source.
 
 ## Live demo
 https://stevenvictor.net/chess3d
+
+
+## Credits
+* Obj parsing code (c) 2012 kanda and matsuda
+* Wood texture by Augustine Wong: https://unsplash.com/@augustinewong
