@@ -1,9 +1,9 @@
 #! /bin/bash
 
-rm glta.zip
+rm chess3d.zip
 
 echo "<div class='version'>version: $(date +%s)</div>" > ./src/app/version.html
-npx ng build --configuration=production --base-href /glta/
+npx ng build --configuration=production --base-href /chess3d/
 
-zip -r glta.zip glta
-# rm -rf glta
+zip -r chess3d.zip chess3d
+# rm -rf chess3d

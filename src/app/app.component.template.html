@@ -1,343 +1,227 @@
-<div (window:resize)="handler.onResize($event)" style="text-align:left;margin:0.5em;" [attr.init]="initScreen()">
+<div (window:resize)="handler.onResize($event)" class="main" [attr.init]="initScreen()">
   <h1 class="banner">
-    WebGL Angular/TypeScript/Webpack Template
+    Chess Puzzles 3d
   </h1>
-  <div class="smallLabel"><a href="https://github.com/smycynek/webgl-template">
-      https://github.com/smycynek/webgl-template</a> </div>
-  <canvas class="responsive-canvas" (click)="handler.toggleSpinMode()"
-    style="padding-bottom: 0px; margin-bottom: 0px;border:1px solid #000000;" id="gl_canvas"></canvas>
-  <div class="smallLabel">Tap image to toggle spin.</div>
-
-  <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
+  <div class="container section">
     <div class="row">
-      <div class="col-3">
-        <input checked class="radioSpaced" type="radio" name="rModelChoice" (click)="handler.setCubeModel()" />
-        <span class="smallLabel">Box</span>
+      <div class="col-2">
+        <input checked type="radio" name="selProjectionType" (click)="handler.setPerspectiveModeWhite()" /><span
+          class="largeLabel">White</span>
       </div>
-      <div class="col-3">
-        <input class="radioSpaced" type="radio" name="rModelChoice" (click)="handler.setNinModel()" />
-        <span class="smallLabel">NIN</span>
-      </div>
-      <div class="col-3">
-        <input class="radioSpaced" type="radio" name="rModelChoice" (click)="handler.setRookModel()" />
-        <span class="smallLabel">Rook</span>
-      </div>
-      <div class="col-3">
-        <input class="radioSpaced" type="radio" name="rModelChoice" (click)="handler.setUploadedModel()" />
-        <span class="smallLabel">Custom</span>
-      </div>
-    </div>
-    <div [hidden]="modelChoice != 4" class="row">
-      <div class="col-3">
-        <span class="label">OBJ File <a href="https://github.com/smycynek/webgl-template#tips">(Tips)</a></span>
-      </div>
-      <div class="col-3">
-        <input (change)="handler.onFileSelected($event)" class="radioSpaced" type="file" accept=".obj" name="rFile">
+      <div class="col-2">
+        <input type="radio" name="selProjectionType" (click)="handler.setPerspectiveModeBlack()" /><span
+          class="largeLabel">Black</span>
       </div>
     </div>
   </div>
-
-  <details>
-    <summary>Basics</summary>
-    <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
-
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Lighting</span>
-        </div>
-        <div class="col-3">
-          <input class="radioSpaced" type="radio" name="rlightingType" (click)="handler.setDirectionalLightMode()" />
-          <span class="smallLabel">Direction</span>
-        </div>
-        <div class="col-3">
-          <input checked class="radioSpaced" type="radio" name="rlightingType" (click)="handler.setPointLightMode()" />
-          <span class="smallLabel">Point</span>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Entity</span>
-        </div>
-        <div class="col-3">
-          <input class="radioSpaced" type="radio" name="rentityType" (click)="handler.setPointMode()" />
-          <span class="smallLabel">Vertex</span>
-        </div>
-        <div class="col-3">
-          <input class="radioSpaced" checked type="radio" name="rentityType" (click)="handler.setTriangleMode()" />
-          <span class="smallLabel">Triangle</span>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Projection</span>
-        </div>
-        <div class="col-3">
-          <input class="radioSpaced" type="radio" name="rprojectionType" (click)="handler.setOrthoMode()" /><span
-            class="smallLabel">Ortho</span>
-        </div>
-        <div class="col-4">
-          <input class="radioSpaced" checked type="radio" name="rprojectionType" (click)="handler.setPerspectiveMode()" /><span
-            class="smallLabel">Perspective</span>
-        </div>
-      </div>
-
+  <canvas class="responsive-canvas" (click)="handler.app.start()" id="gl_canvas"></canvas>
+  <div [hidden]="!question || (question === 'undefined') || !answer || (answer === 'haqrsvarq')">
+    <div>
+      <span class="largeLabel">Puzzle Question:</span> <span class='questionAnswer'>{{question}}</span> <span
+        class='questionAnswer'><strong>{{showAnswer ? answer : '' }}</strong></span>
     </div>
-  </details>
-  <details>
-    <summary>Transform</summary>
-    <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Scale</span>
-        </div>
-
-        <div class="col-3">
-          <div class="smallLabel">X</div> <input step="0.1" [(ngModel)]="scale.x" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div> <input step="0.1" [(ngModel)]="scale.y" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div> <input step="0.1" [(ngModel)]="scale.z" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Translate</span>
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="translate.x" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="translate.y" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="translate.z" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Rotate</span>
-        </div>
-
-        <div class="col-3">
-          <div class="smallLabel">X</div> <input step="1" [(ngModel)]="rotation.x" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div> <input step="1" [(ngModel)]="rotation.y" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div> <input step="1" [(ngModel)]="rotation.z" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-      </div>
+    <div class="button-container">
+      <button type="button" class="styled-button" (click)="handler.toggleShow()">Show answer</button>
     </div>
-  </details>
-
+  </div>
+  <div class="button-container">
+    <a href={{reverseQuery}} class="styled-button-href" target="_blank" rel="noreferrer noopener">Editor</a>
+  </div>
   <details>
-    <summary>Orthographic</summary>
-
-    <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
-
-
-      <div class="row">
-        <div class="col-3">
-          <div class="smallLabel">Left</div><input [disabled]="projectionType =='PERSPECTIVE'" width="2em" step="0.1"
-            [(ngModel)]="ortho.left" #ctrl="ngModel" (change)="start()" type="number" />
+    <summary>Debug</summary>
+    <details>
+      <summary>Misc</summary>
+      <div class="container section">
+        <div class="row">
+          <div class="col-2">
+            <button class="btn btn-primary" (click)="start()">Redraw</button>
+          </div>
         </div>
-        <div class="col-3">
-          <div class="smallLabel">Right</div><input [disabled]="projectionType =='PERSPECTIVE'" step="0.1"
-            [(ngModel)]="ortho.right" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-3">
-          <div class="smallLabel">Bottom</div><input [disabled]="projectionType =='PERSPECTIVE'" step="0.1"
-            [(ngModel)]="ortho.bottom" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Top</div><input [disabled]="projectionType =='PERSPECTIVE'" step="0.1"
-            [(ngModel)]="ortho.top" #ctrl="ngModel" (change)="start()" type="number" />
+        <div class="row">
+          <div class="col-2">
+            <input type="radio" name="selProjectionType" (click)="handler.setPerspectiveModeWhiteQueen()" /><span
+              class="largeLabel">a5</span>
+          </div>
+          <div class="col-2">
+            <input type="radio" name="selProjectionType" (click)="handler.setOrthoMode()" /><span
+              class="largeLabel">Top</span>
+          </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-3">
-          <div class="smallLabel">Near</div><input [disabled]="projectionType =='PERSPECTIVE'" step="0.1"
-            [(ngModel)]="ortho.near" #ctrl="ngModel" (change)="start()" type="number" />
+    </details>
+    <details>
+      <summary>Transform</summary>
+      <div class="container section">
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">Scale</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div> <input step="0.1" [(ngModel)]="scale.x" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div> <input step="0.1" [(ngModel)]="scale.y" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div> <input step="0.1" [(ngModel)]="scale.z" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
         </div>
-        <div class="col-3">
-          <div class="smallLabel">Far</div><input [disabled]="projectionType =='PERSPECTIVE'" step="0.1"
-            [(ngModel)]="ortho.far" #ctrl="ngModel" (change)="start()" type="number" />
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">Translate</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="translate.x" #ctrl="ngModel"
+              (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="translate.y" #ctrl="ngModel"
+              (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="translate.z" #ctrl="ngModel"
+              (change)="start()" type="number" />
+          </div>
         </div>
-      </div>
-    </div>
-  </details>
-
-
-  <details>
-    <summary>Perspective</summary>
-
-    <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
-
-      <div class="row">
-
-        <div class="col-3">
-          <div class="smallLabel">Angle</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
-            [(ngModel)]="perspective.fieldOfView" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Aspect</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
-            [(ngModel)]="perspective.aspectRatio" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Near</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
-            [(ngModel)]="perspective.near" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Far</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
-            [(ngModel)]="perspective.far" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-      </div>
-    </div>
-  </details>
-
-  <details>
-    <summary>View</summary>
-
-    <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Up</span>
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="up.x" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="up.y" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="up.z" #ctrl="ngModel" (change)="start()"
-            type="number" />
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">Rotate</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div> <input step="1" [(ngModel)]="rotation.x" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div> <input step="1" [(ngModel)]="rotation.y" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div> <input step="1" [(ngModel)]="rotation.z" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
         </div>
       </div>
-
-
-
-
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Eye</span>
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="eye.x" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="eye.y" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="eye.z" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-      </div>
-
-
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">LookAt</span>
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="look.x" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="look.y" #ctrl="ngModel" (change)="start()"
-            type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="look.z" #ctrl="ngModel" (change)="start()"
-            type="number" />
+    </details>
+    <details>
+      <summary>Perspective</summary>
+      <div class="container section">
+        <div class="row">
+          <div class="col-3">
+            <div class="smallLabel">Angle</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
+              [(ngModel)]="perspective.fieldOfView" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Aspect</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
+              [(ngModel)]="perspective.aspectRatio" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Near</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
+              [(ngModel)]="perspective.near" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Far</div><input [disabled]="projectionType =='ORTHO'" step="0.1"
+              [(ngModel)]="perspective.far" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
         </div>
       </div>
-    </div>
-  </details>
-  <details>
-    <summary>Lighting</summary>
-
-    <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Directional</span>
+    </details>
+    <details>
+      <summary>View</summary>
+      <div class="container section">
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">Up</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="up.x" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="up.y" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="up.z" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
         </div>
-        <div class="col-3">
-          <div class="smallLabel">X</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
-            [(ngModel)]="directionalLight.x" #ctrl="ngModel" (change)="start()" type="number" />
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">Eye</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="eye.x" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="eye.y" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="eye.z" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
         </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
-            [(ngModel)]="directionalLight.z" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
-            [(ngModel)]="directionalLight.z" #ctrl="ngModel" (change)="start()" type="number" />
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">LookAt</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div><input step="0.1" [(ngModel)]="look.x" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div><input step="0.1" [(ngModel)]="look.y" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="look.z" #ctrl="ngModel" (change)="start()"
+              type="number" />
+          </div>
         </div>
       </div>
-
-      <div class="row">
-        <div class="col-3">
-          <span class="label">Point</span>
+    </details>
+    <details>
+      <summary>Lighting</summary>
+      <div class="container section">
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">Directional</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
+              [(ngModel)]="directionalLight.x" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
+              [(ngModel)]="directionalLight.z" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
+              [(ngModel)]="directionalLight.z" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
         </div>
-        <div class="col-3">
-          <div class="smallLabel">X</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
-            [(ngModel)]="pointLight.x" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Y</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
-            [(ngModel)]="pointLight.y" #ctrl="ngModel" (change)="start()" type="number" />
-        </div>
-        <div class="col-3">
-          <div class="smallLabel">Z</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
-            [(ngModel)]="pointLight.z" #ctrl="ngModel" (change)="start()" type="number" />
+        <div class="row">
+          <div class="col-3">
+            <span class="smallLabel">Point</span>
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">X</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
+              [(ngModel)]="pointLight.x" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Y</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
+              [(ngModel)]="pointLight.y" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
+          <div class="col-3">
+            <div class="smallLabel">Z</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
+              [(ngModel)]="pointLight.z" #ctrl="ngModel" (change)="start()" type="number" />
+          </div>
         </div>
       </div>
-
-    </div>
-  </details>
-
-  <details>
-    <summary>Vertices</summary>
-
-    <div style="text-align:left;margin:0.25em;padding:0.25em" class="container">
-    <div class="row">
-      <div class="col-3">
-        <input [disabled]="entityType =='TRIANGLE'" checked class="radioSpaced" type="radio" name="rPointStyle" (click)="handler.setFancyPointsMode()" />
-        <span class="smallLabel">Fancy</span>
-      </div>
-      <div class="col-3">
-        <input [disabled]="entityType =='TRIANGLE'"  class="radioSpaced" type="radio" name="rPointStyle" (click)="handler.setSimplePointsMode()" />
-        <span class="smallLabel">Simple</span>
-      </div>
- </div>
-    </div>
+    </details>
   </details>
 </div>

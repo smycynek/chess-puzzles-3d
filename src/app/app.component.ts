@@ -1,24 +1,60 @@
-import { Component } from '@angular/core';
-
+import { Component, NgModule, OnInit } from '@angular/core';
 import fragmentShaderSrc from '../assets/shaders/fragment-shader.glsl';
 import vertexShaderSrc from '../assets/shaders/vertex-shader.glsl';
-import { Constants, ModelChoice, PointStyle } from './constants';
+import { BoardFile, Color, ModelChoice } from './constants';
 import { Defaults } from './defaults';
 import { Implementation } from './implementation';
 import { GlUtil } from './lib/glUtil';
 import { DrawingInfo, OBJDoc } from './lib/objDoc';
 import { UiCallbacks } from './uiCallbacks';
 import { Model, Ortho, Triple } from './util/containers';
+import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { parseSquareString } from './util/parsing';
+
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const rot13Cipher = require('rot13-cipher');
+
+const routes: Routes = [];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.template.html',
   styles: []
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+
+  constructor(private route: ActivatedRoute) { }
+
+  ngOnInit() {
+    this.route.queryParams
+      .subscribe(params => {
+        console.log(params);
+        this.data = params['data'] || '';
+        this.question = params['question'] || '';
+        this.answer = rot13Cipher(params['answer'] ? params['answer'] : '');
+        this.reverseQuery = this.getReverseQuery(params);
+      }
+      );
+  }
   // startup, spin control
-  constructor() {
-    this.handler.spin();
+
+  private getReverseQuery(params: any): string {
+    const base = 'https://stevenvictor.net/chess/#/chess/create/sknsk?';
+    const data = params['data'];
+    const question = params['question'];
+    const answer = params['answer'];
+    const dataParam = data ? `data=${encodeURIComponent(data)}` : '';
+    const questionParam = question ? `&question=${encodeURIComponent(question)}` : '';
+    const answerParam = answer ? `&answer=${encodeURIComponent(answer)}` : '';
+    const editModeParam = '&editMode=true';
+    return `${base}${dataParam}${questionParam}${answerParam}${editModeParam}`;
   }
 
   // This 2 fields make a very primitive Cheshire cat pattern to keep this file size smaller
@@ -26,7 +62,7 @@ export class AppComponent {
   public implementation = new Implementation(this);
 
   public init = false;
-  public spinning = true;
+  public spinning = false;
   public logging = false;
   public gl: any = null;
   private shaderProgram: any = null;
@@ -35,29 +71,33 @@ export class AppComponent {
   public models: Map<ModelChoice, Model> = new Map<ModelChoice, Model>();
 
   // Basic choices/toggles
-  public pointStyleChoice: PointStyle = Defaults.pointStyle;
-  public modelChoice: ModelChoice = Defaults.modelChoice;
+
   public lightingType: string = Defaults.lightingType;
-  public entityType: string = Defaults.entityType;
+
   public projectionType = Defaults.projectionType;
 
   // Basic transforms
-  public translate: Triple = Defaults.translation;
-  public rotation: Triple = Defaults.rotation;
-  public scale: Triple = Defaults.scale;
+  public translate: Triple = Defaults.translation.clone();
+  public rotation: Triple = Defaults.rotation.clone();
+  public scale: Triple = Defaults.scale.clone();
 
   // View control
-  public eye: Triple = Defaults.eye;
-  public up: Triple = Defaults.up;
-  public look: Triple = Defaults.look;
-
+  public eye: Triple = Defaults.eyeWhite.clone();
+  public up: Triple = Defaults.up.clone();
+  public look: Triple = Defaults.lookWhite.clone();
+  public orbit = 0;
   // Lighting positions
-  public directionalLight: Triple = Defaults.directionalLight;
-  public pointLight: Triple = Defaults.pointLight;
+  public directionalLight: Triple = Defaults.pointLightWhite.clone();
+  public pointLight: Triple = Defaults.pointLightWhite.clone();
 
   // Projection parameters
-  public ortho: Ortho = Defaults.ortho;
-  public perspective = Defaults.perspective;
+  public ortho: Ortho = Defaults.ortho.clone();
+  public perspective = Defaults.perspective.clone();
+  public data = ''; // Constants.fischerPuzzle;
+  public question = ''; // Constants.fischerPuzzle;
+  public answer = ''; // Constants.fischerPuzzle;
+  public reverseQuery = '';
+  public showAnswer = false;
 
   // GetWebGL context, load models, init shaders, and call start() to start rendering
   public initScreen() {
@@ -74,62 +114,140 @@ export class AppComponent {
       this.gl.useProgram(this.shaderProgram);
       this.gl.program = this.shaderProgram;
 
-      fetch('assets/models/nin.obj')
+      fetch('assets/models/rook_layout.obj')
         .then(response => response.text())
         .then(data => {
-          const parsedObj: OBJDoc = new OBJDoc('nin.obj');
+          const parsedObj: OBJDoc = new OBJDoc('rook_layout.obj');
           parsedObj.parse(data, 1, true);
           const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-          const nin: Model = new Model(drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 10);
-          this.models.set(ModelChoice.NineInchNails, nin);
+          const rook: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+          this.models.set(ModelChoice.Rook, rook);
+          this.start();
         }).then(() => {
-          fetch('assets/models/rook.obj')
+          fetch('assets/models/pawn_layout.obj')
             .then(response => response.text())
             .then(data => {
-              const parsedObj: OBJDoc = new OBJDoc('rook.obj');
+              const parsedObj: OBJDoc = new OBJDoc('pawn_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const rook: Model = new Model(drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 1.5);
-              this.models.set(ModelChoice.ChessRook, rook);
+              const pawn: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(ModelChoice.Pawn, pawn);
+              this.start();
             });
         }).then(() => {
-          fetch('assets/models/box_hole.obj')
+          fetch('assets/models/bishop_layout.obj')
             .then(response => response.text())
             .then(data => {
-              const parsedObj: OBJDoc = new OBJDoc('box_hole.obj');
+              const parsedObj: OBJDoc = new OBJDoc('bishop_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const cube: Model = new Model(drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 1.5);
-              this.models.set(ModelChoice.Cube, cube);
+              const bishop: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(ModelChoice.Bishop, bishop);
+              this.start();
+            });
+        }).then(() => {
+          fetch('assets/models/king_layout.obj')
+            .then(response => response.text())
+            .then(data => {
+              const parsedObj: OBJDoc = new OBJDoc('king_layout.obj');
+              parsedObj.parse(data, 1, true);
+              const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
+              const king: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(ModelChoice.King, king);
+              this.start();
+            });
+        }).then(() => {
+          fetch('assets/models/queen_layout.obj')
+            .then(response => response.text())
+            .then(data => {
+              const parsedObj: OBJDoc = new OBJDoc('queen_layout.obj');
+              parsedObj.parse(data, 1, true);
+              const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
+              const queen: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(ModelChoice.Queen, queen);
+              this.start();
+            });
+        }).then(() => {
+          fetch('assets/models/knight_layout.obj')
+            .then(response => response.text())
+            .then(data => {
+              const parsedObj: OBJDoc = new OBJDoc('knight_layout.obj');
+              parsedObj.parse(data, 1, true);
+              const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
+              const cube: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(ModelChoice.Knight, cube);
+              this.start();
+            });
+        }).then(() => {
+          fetch('assets/models/square_layout.obj')
+            .then(response => response.text())
+            .then(data => {
+              const parsedObj: OBJDoc = new OBJDoc('square_layout.obj');
+              parsedObj.parse(data, 1, true);
+              const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
+              const square: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(ModelChoice.Square, square);
               this.start();
             });
         });
     }
   }
 
+  private draw(rank: number, file: BoardFile, color: Color, model: ModelChoice): void {
+    this.gl.drawElements(this.gl.TRIANGLES, this.implementation.loadGLData(this.gl, rank, file, color, model), this.gl.UNSIGNED_SHORT, 0);
+  }
+
+  private drawSetup(data: string) {
+    if (!data) {
+      data =
+        'wPa2,wPb2,wPc2,wPd2,wPe2,wPf2,wPg2,wPh2,bPa7,bPb7,bPc7,bPd7,bPe7,bPf7,bPg7,bPh7,' +
+        'wRa1,wRh1,bRa8,bRh8,' +
+        'wNb1,wNg1,bNb8,bNg8,' +
+        'wBc1,wBf1,bBc8,bBf8,' +
+        'wQd1,wKe1,bQd8,bKe8';
+    }
+    let puzzleData: Array<string> = [];
+    if (data) {
+      puzzleData = data.split(',');
+    }
+    const dataParsed = puzzleData.map((m) => parseSquareString(m));
+    dataParsed.forEach(d => {
+      this.draw(d.square.rank, d.square.file, d.unit.color, d.unit.unit);
+    });
+  }
   // Set up data in WebGL context, call drawArrays/drawElements
   public start(): void {
+    console.log('Start');
     const gl = this.gl;
     gl.enable(gl.DEPTH_TEST);
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BIT);
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
     this.implementation.scaleCanvas();
-    const pointCount = this.implementation.loadGLData(gl);
-    if (pointCount <= 0) {
-      return;
-    }
-    if (this.logging) {
-      this.implementation.logState();
-    }
+    const pawn = this.models.get(ModelChoice.Pawn);
+    const rook = this.models.get(ModelChoice.Rook);
+    const bishop = this.models.get(ModelChoice.Bishop);
+    const knight = this.models.get(ModelChoice.Knight);
+    const square = this.models.get(ModelChoice.Square);
+    const queen = this.models.get(ModelChoice.Queen);
+    const king = this.models.get(ModelChoice.King);
+    if (pawn && rook && knight && bishop && queen && king && square) {
+      gl.clearColor(0.0, 0.0, 0.0, 0.0);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BIT);
+      square.activate();
+      for (let rank = 1; rank < 9; rank++) {
+        for (let file: BoardFile = BoardFile.a; file <= BoardFile.h; file++) {
+          const oddRank = ((rank % 2) === 1);
+          const oddFile = ((file.valueOf() % 2) === 1);
+          const color = ((oddRank && oddFile) || (!oddRank && !oddFile)) ? Color.Dark : Color.Light;
+          gl.drawElements(gl.TRIANGLES, this.implementation.loadGLData(gl, rank, file, color, ModelChoice.Square), gl.UNSIGNED_SHORT, 0);
+        }
+      }
 
-    if (this.entityType == Constants.VERTEX) {
-      gl.drawArrays(gl.POINTS, 0, pointCount);
+      this.drawSetup(this.data);
     }
     else {
-      gl.drawElements(gl.TRIANGLES, pointCount, gl.UNSIGNED_SHORT, 0);
+      console.log('Not all models loaded yet, please retry.');
     }
   }
-
 }
+

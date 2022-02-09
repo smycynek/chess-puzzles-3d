@@ -403,7 +403,7 @@ export class Matrix4 {
    * @param far The distances to the farther depth clipping plane. This value must be plus value.
    * @return this
    */
-  public perspective (fovy: number, aspect: number, near: number, far: number): Matrix4 {
+  public  (fovy: number, aspect: number, near: number, far: number): Matrix4 {
     return this.concat(new Matrix4().setPerspective(fovy, aspect, near, far));
   }
 

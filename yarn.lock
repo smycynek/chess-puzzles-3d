@@ -225,10 +225,10 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/router@~13.1.0":
-  version "13.1.1"
-  resolved "https://registry.npmjs.org/@angular/router/-/router-13.1.1.tgz"
-  integrity sha512-rlz5BBgNX+G2vVu2Gb5avx3LL08i7R/xZO7zPwh0HhXz/Vp8XFlWwaqAGb6Hgat772K2uCxF1/JBLQCUBY2MNQ==
+"@angular/router@^13.2.0":
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/@angular/router/-/router-13.2.0.tgz#1bde95cc05195ed2c5cb1ec4f54233e48c2f33a3"
+  integrity sha512-8fWxcWT/LpaGhmXJ8xH+E7UObzt5IMGzK1sJGRu508y5tcbuBlTJt3yV97mCeUQ0g/E+2GEv6vuxY7OcfDaZow==
   dependencies:
     tslib "^2.3.0"
 
@@ -1429,10 +1429,10 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-17.0.4.tgz"
   integrity sha512-6xwbrW4JJiJLgF+zNypN5wr2ykM9/jHcL7rQ8fZe2vuftggjzZeRSM4OwRc6Xk8qWjwJ99qVHo/JgOGmomWRog==
 
-"@types/node@^12.11.1":
-  version "12.20.38"
-  resolved "https://registry.npmjs.org/@types/node/-/node-12.20.38.tgz"
-  integrity sha512-NxmtBRGipjx1B225OeMdI+CQmLbYqvvmYbukDTJGDgzIDgPQ1EcjGmYxGhOk5hTBqeB558S6RgHSpq2iiqifAQ==
+"@types/node@^17.0.13":
+  version "17.0.13"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-17.0.13.tgz#5ed7ed7c662948335fcad6c412bb42d99ea754e3"
+  integrity sha512-Y86MAxASe25hNzlDbsviXl8jQHb0RDvKt4c40ZJQ1Don0AAL0STLZSs4N+6gLEO55pedy7r2cLwS+ZDxPm/2Bw==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -5379,6 +5379,11 @@ rimraf@^3.0.2:
   integrity sha512-JZkJMZkAGFFPP2YqXZXPbMlMBgsxzE8ILs4lMIX/2o0L9UBw9O/Y3o6wFw/i9YLapcUJWwqbi3kdxIPdC62TIA==
   dependencies:
     glob "^7.1.3"
+
+rot13-cipher@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/rot13-cipher/-/rot13-cipher-1.0.0.tgz#959d5d6425446a5e292703ca895b935d69bf0363"
+  integrity sha512-KXW+GRWwqT1xSBl4K7WzlXX8ba+h2CjguOhPaBsZ3nBPDzaTQncL3uEAauLXS4tAqerfAoc1iIYZbo8gPhmAfA==
 
 run-async@^2.4.0:
   version "2.4.1"

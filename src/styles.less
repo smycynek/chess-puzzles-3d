@@ -1,10 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
+
+h1, h2, h3, head, body, span, p, a, button, ul, li, label, input, .nav-tab {
+  font-family: 'Arial', sans-serif;
+}
+
+h1,h2,h3 {
+  margin-left: 0.25em;
+}
+
+.section {
+  text-align:left;
+  ;margin:0.25em;
+  padding:0.25em;
+
+}
+.main {
+  text-align:left;
+  margin:0.5em;
+}
 
 .banner {
-  font-size: medium;
-  margin-bottom: 0px;
-  padding-bottom: 0px;
+  line-height: '0.5em';
+  font-size: 1.75em;
+  margin-top: 0.5em;
+  margin-bottom: 0.1em;
+  padding: 0em;
+  font-weight: bold;
 }
+
 input[type='number']{
     margin-top: 0.0em;
     padding-top: 0.0em;
@@ -12,14 +34,10 @@ input[type='number']{
     padding-left: 0.5em;
     width: 55px;
     font-size: x-small;
-
 }
+
 summary {
   font-size: small;
-}
-.label {
-  font-size: x-small;
-  font-weight: bold;
 }
 
 .smallLabel {
@@ -28,25 +46,54 @@ summary {
   margin-bottom: 0.0em;
   padding-bottom: 0.0em;
   margin-left: 0.5em;
-
 }
-.radioSpaced {
-  font-size: x-small;
+
+.largeLabel {
+  font-weight: bold;
+  font-size: medium;
+  margin-bottom: 0.0em;
+  padding-bottom: 0.0em;
+  margin-left: 0.5em;
+}
+
+.questionAnswer {
+  margin-left: 0.5em;
+  margin-right: 0.5em;
+}
+
+.button-container {
+  margin: 0.5em;
+  padding: 0.5em;
+}
+
+
+canvas {
+    margin: .25em;
+    padding: .25em;
+    display: block;
+    outline: none;
+    border-style: none;
+    border-width: 0px;
 }
 
 @media (max-width: 400px) {
   .responsive-canvas {
-    width: 360px;
-    height: 360px;
+    width: 380px;
+    height: 317px;
   }
 }
 
-
-
 @media (min-width: 1000px) {
   .responsive-canvas {
-    width: 700px;
-    height: 700px;
+    width: 600px;
+    height: 500px;
+  }
+}
+
+@media (min-width: 2000px) {
+  .responsive-canvas {
+    width: 900px;
+    height: 750px;
   }
 }
 
@@ -58,3 +105,85 @@ summary {
   margin-left: 0.5em;
 
 }
+
+.background-textured {
+  background-image: url(assets/purty_wood_@2X.png);
+  background-repeat:repeat;
+}
+
+.button-base {
+  border-width: 2.0px;
+  color: black;
+  background-color: rgba(117,97,68,0.3);
+  border-color: black;
+  border-style: solid;
+}
+
+.active {
+  background-color: rgba(117,97,68,0.7);
+}
+
+.hover {
+  background-color: rgba(117,97,68,0.2);
+}
+
+.focus {
+  background-color: rgba(117,97,68,0.3);
+}
+
+
+.styled-button {
+  .button-base;
+  padding: 0.0em;
+  min-width: 9.0em;
+  max-width: 9.0em;
+  margin-top: 0.0em;
+  margin-left: 0.0em;
+  margin-right: 0.5em;
+  height: 2.5em;
+  border-radius: 0.5em;
+}
+
+.styled-button-href {
+  .button-base;
+  padding: 0.5em;
+  min-width: 9.0em;
+  max-width: 9.0em;
+  margin-top: 0.0em;
+  margin-left: 0.0em;
+  margin-right: 0.5em;
+  border-radius: 0.5em;
+  text-decoration: none;
+}
+
+.styled-button-href:focus {
+  .styled-button-href;
+  .focus;
+}
+
+.styled-button-href:active {
+  .styled-button-href;
+  .active;
+}
+
+.styled-button-href:hover {
+  .styled-button-href;
+  .hover;
+}
+
+.styled-button:focus {
+  .styled-button;
+  .focus;
+}
+
+.styled-button:active {
+  .styled-button;
+  .active;
+}
+
+.styled-button:hover {
+  .styled-button;
+  .hover;
+}
+
+

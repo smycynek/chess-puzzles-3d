@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "glta": {
+    "chess3d": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -44,7 +44,7 @@
             "customWebpackConfig": {
               "path": "./webpack.config.js"
             },
-            "outputPath": "glta",
+            "outputPath": "chess3d",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -97,10 +97,10 @@
           "builder": "@angular-builders/custom-webpack:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "glta:build:production"
+              "browserTarget": "chess3d:build:production"
             },
             "development": {
-              "browserTarget": "glta:build:development"
+              "browserTarget": "chess3d:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -108,11 +108,11 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "glta:build"
+            "browserTarget": "chess3d:build"
           }
         }
       }
     }
   },
-  "defaultProject": "glta"
+  "defaultProject": "chess3d"
 }
