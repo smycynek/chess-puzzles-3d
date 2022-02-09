@@ -1,7 +1,8 @@
 # Chess-3d
-
 Copyright 2022 Steven Mycynek -- portions (c) 2012 kanda and matsuda
+Wood texture by Augustine Wong: https://unsplash.com/@augustinewong
 
+## Basics
 This is the first project I made based off of my WebGL starter template:
 https://github.com/smycynek/webgl-template
 
@@ -24,6 +25,7 @@ a good-enough state to post the source.
 * Add rank and file labels
 * Edit/drag/drop pieces in 3d (The view is read-only currently)
 * Better management of buffers and drawing order for higher performance
+
 
 ## Live demo
 https://stevenvictor.net/chess3d
