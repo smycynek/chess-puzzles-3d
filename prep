@@ -1,0 +1,9 @@
+#! /bin/bash
+
+rm glta.zip
+
+echo "<div class='version'>version: $(date +%s)</div>" > ./src/app/version.html
+npx ng build --configuration=production --base-href /glta/
+
+zip -r glta.zip glta
+# rm -rf glta
