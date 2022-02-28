@@ -6,6 +6,7 @@ export enum Color {
   Black = 1,
   Light = 3,
   Dark = 4,
+  Frame = 5,
 }
 
 export enum BoardFile {
@@ -26,6 +27,7 @@ export enum ModelChoice {
   Queen = 5,
   King = 6,
   Square = 7,
+  Frame = 8,
 }
 
 
@@ -46,6 +48,7 @@ export class Constants {
   public static readonly pieceColorBlack: Vector4 = new Vector4([.35, .3, .25, 1.0]);
 
   public static readonly squareColorDark: Vector4 = new Vector4([0.3, 0.7, 0.3, 1]);
+  public static readonly frameColor: Vector4 = new Vector4([0.5, 0.4, 0.4, 1]);
   public static readonly squareColorLight: Vector4 = new Vector4([1, 1, 1, 1]);
   public static readonly colorSpecular: Vector4 = new Vector4([1, 1, 1, 1]);
   public static toString(): string {

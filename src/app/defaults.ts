@@ -16,7 +16,7 @@ export class Defaults {
   public static readonly lookWhite: Triple = new Triple(-1, -2.0, 0);
   public static readonly lookBlack: Triple = new Triple(-1, -2.2, 0);
   public static readonly ortho = new Ortho(-7.6, 7.6, -6.4, 6.4, -40, 40);
-  public static readonly perspective = new Perspective(51, 600 / 500.0, 0.1, 100);
+  public static readonly perspective = new Perspective(63, 600 / 500.0, 0.1, 100);
   public static readonly projectionType: string = Constants.PERSPECTIVE;
   public static readonly lightingType = Constants.POINT_LIGHT;
   public static readonly whiteQueenLook = new Triple(0, -2, 0);
