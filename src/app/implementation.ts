@@ -92,17 +92,17 @@ export class Implementation {
   private position(rank: number, file: BoardFile, model: Model) {
 
 
-    let x = (Dimensions.squareWidth * 2 * file.valueOf())  + Dimensions.squareWidth  - (1.4 * 4) - 0.3;
-    let z = (Dimensions.squareWidth * -2 * rank) - Dimensions.squareWidth  + (1.4 * 4);
+    let x = (Dimensions.squareWidth * 2 * file.valueOf()) - (Dimensions.squareWidth * 8) - Dimensions.squareWidth;
+    let z = (Dimensions.squareWidth * -2 * rank) + (Dimensions.squareWidth * 8) + Dimensions.squareWidth;
     let y = 0;
     if (model == Model.Square) {
       y = .58;
       z -= Dimensions.squareWidth;
     }
     if (model == Model.Frame) {
-      z = 5.15;
-      x = -4.75;
-      y = 0.605;
+      z = 0;
+      x = 0;
+      y = 0;
     }
     return new Triple(x, y, z);
   }
