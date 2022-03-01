@@ -92,12 +92,17 @@ export class Implementation {
   private position(rank: number, file: BoardFile, model: ModelChoice) {
     const xOffset = .57;
     const zOffset = .57;
-    const x = (xOffset * 2 * file.valueOf()) + xOffset - (1.4 * 4) - 0.3;
+    let x = (xOffset * 2 * file.valueOf()) + xOffset - (1.4 * 4) - 0.3;
     let z = (zOffset * -2 * rank) - zOffset + (1.4 * 4);
     let y = 0;
     if (model == ModelChoice.Square) {
       y = .58;
       z -= .6;
+    }
+    if (model == ModelChoice.Frame) {
+      z = 5.15;
+      x = -4.75;
+      y = 0.605;
     }
     return new Triple(x, y, z);
   }
@@ -188,6 +193,9 @@ export class Implementation {
       this.app.gl.uniform4fv(u_AmbientColor, Constants.squareColorLight.elements);
       this.app.gl.uniform4fv(u_DiffuseColor, Constants.squareColorLight.elements);
       break;
+    case Color.Frame:
+      this.app.gl.uniform4fv(u_AmbientColor, Constants.frameColor.elements);
+      this.app.gl.uniform4fv(u_DiffuseColor, Constants.frameColor.elements);
     }
   }
 

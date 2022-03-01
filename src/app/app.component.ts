@@ -10,6 +10,7 @@ import { UiCallbacks } from './uiCallbacks';
 import { Model, Ortho, Triple } from './util/containers';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { parseSquareString } from './util/parsing';
+import { ThisReceiver } from '@angular/compiler';
 
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -22,6 +23,10 @@ const routes: Routes = [];
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
+
+const headline = 'Try%20this%20chess%20puzzle.';
+
+const twitterBase = 'http://twitter.com/share?text=';
 
 @Component({
   selector: 'app-root',
@@ -40,10 +45,16 @@ export class AppComponent implements OnInit {
         this.question = params['question'] || '';
         this.answer = rot13Cipher(params['answer'] ? params['answer'] : '');
         this.reverseQuery = this.getReverseQuery(params);
+        this.twitter = 'https://www.twitter.com';
       }
       );
   }
   // startup, spin control
+
+  public  getTwitterUrl() {
+    const fullStr = encodeURIComponent(window.location.toString());
+    return `${twitterBase}${headline}&url=${fullStr}&hashtags=chesspuzzle`;
+  }
 
   private getReverseQuery(params: any): string {
     const base = 'https://stevenvictor.net/chess/#/chess/create/sknsk?';
@@ -98,6 +109,7 @@ export class AppComponent implements OnInit {
   public answer = ''; // Constants.fischerPuzzle;
   public reverseQuery = '';
   public showAnswer = false;
+  public twitter = '';
 
   // GetWebGL context, load models, init shaders, and call start() to start rendering
   public initScreen() {
@@ -189,6 +201,17 @@ export class AppComponent implements OnInit {
               this.models.set(ModelChoice.Square, square);
               this.start();
             });
+        }).then(() => {
+          fetch('assets/models/frame.obj')
+            .then(response => response.text())
+            .then(data => {
+              const parsedObj: OBJDoc = new OBJDoc('frame.obj');
+              parsedObj.parse(data, 1, true);
+              const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
+              const frame: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(ModelChoice.Frame, frame);
+              this.start();
+            });
         });
     }
   }
@@ -222,6 +245,7 @@ export class AppComponent implements OnInit {
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.cullFace(gl.BACK);
+
     this.implementation.scaleCanvas();
     const pawn = this.models.get(ModelChoice.Pawn);
     const rook = this.models.get(ModelChoice.Rook);
@@ -230,7 +254,8 @@ export class AppComponent implements OnInit {
     const square = this.models.get(ModelChoice.Square);
     const queen = this.models.get(ModelChoice.Queen);
     const king = this.models.get(ModelChoice.King);
-    if (pawn && rook && knight && bishop && queen && king && square) {
+    const frame = this.models.get(ModelChoice.Frame);
+    if (pawn && rook && knight && bishop && queen && king  && square && frame) {
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BIT);
       square.activate();
@@ -242,8 +267,11 @@ export class AppComponent implements OnInit {
           gl.drawElements(gl.TRIANGLES, this.implementation.loadGLData(gl, rank, file, color, ModelChoice.Square), gl.UNSIGNED_SHORT, 0);
         }
       }
+      frame.activate();
+      gl.drawElements(gl.TRIANGLES,  this.implementation.loadGLData(gl, 1, BoardFile.a, Color.Frame, ModelChoice.Frame), gl.UNSIGNED_SHORT, 0);
 
       this.drawSetup(this.data);
+
     }
     else {
       console.log('Not all models loaded yet, please retry.');
