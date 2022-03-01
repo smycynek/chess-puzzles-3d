@@ -24,6 +24,10 @@ const routes: Routes = [];
 })
 export class AppRoutingModule { }
 
+const headline = 'Try%20this%20chess%20puzzle.';
+
+const twitterBase = 'http://twitter.com/share?text=';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.template.html',
@@ -41,10 +45,16 @@ export class AppComponent implements OnInit {
         this.question = params['question'] || '';
         this.answer = rot13Cipher(params['answer'] ? params['answer'] : '');
         this.reverseQuery = this.getReverseQuery(params);
+        this.twitter = 'https://www.twitter.com';
       }
       );
   }
   // startup, spin control
+
+  public  getTwitterUrl() {
+    const fullStr = encodeURIComponent(window.location.toString());
+    return `${twitterBase}${headline}&url=${fullStr}&hashtags=chesspuzzle`;
+  }
 
   private getReverseQuery(params: any): string {
     const base = 'https://stevenvictor.net/chess/#/chess/create/sknsk?';
@@ -99,6 +109,7 @@ export class AppComponent implements OnInit {
   public answer = ''; // Constants.fischerPuzzle;
   public reverseQuery = '';
   public showAnswer = false;
+  public twitter = '';
 
   // GetWebGL context, load models, init shaders, and call start() to start rendering
   public initScreen() {
