@@ -41,9 +41,6 @@
       <summary>Misc</summary>
       <div class="container section">
         <div class="row">
-          <div class="col-2">
-            <button class="btn btn-primary" (click)="start()">Redraw</button>
-          </div>
         </div>
         <div class="row">
           <div class="col-2">
@@ -62,23 +59,6 @@
       <div class="container section">
         <div class="row">
           <div class="col-3">
-            <span class="smallLabel">Scale</span>
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">X</div> <input step="0.1" [(ngModel)]="scale.x" #ctrl="ngModel" (change)="start()"
-              type="number" />
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">Y</div> <input step="0.1" [(ngModel)]="scale.y" #ctrl="ngModel" (change)="start()"
-              type="number" />
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">Z</div> <input step="0.1" [(ngModel)]="scale.z" #ctrl="ngModel" (change)="start()"
-              type="number" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3">
             <span class="smallLabel">Translate</span>
           </div>
           <div class="col-3">
@@ -92,23 +72,6 @@
           <div class="col-3">
             <div class="smallLabel">Z</div><input step="0.1" [(ngModel)]="translate.z" #ctrl="ngModel"
               (change)="start()" type="number" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3">
-            <span class="smallLabel">Rotate</span>
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">X</div> <input step="1" [(ngModel)]="rotation.x" #ctrl="ngModel" (change)="start()"
-              type="number" />
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">Y</div> <input step="1" [(ngModel)]="rotation.y" #ctrl="ngModel" (change)="start()"
-              type="number" />
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">Z</div> <input step="1" [(ngModel)]="rotation.z" #ctrl="ngModel" (change)="start()"
-              type="number" />
           </div>
         </div>
       </div>
@@ -197,35 +160,18 @@
       <div class="container section">
         <div class="row">
           <div class="col-3">
-            <span class="smallLabel">Directional</span>
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">X</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
-              [(ngModel)]="directionalLight.x" #ctrl="ngModel" (change)="start()" type="number" />
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">Y</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
-              [(ngModel)]="directionalLight.z" #ctrl="ngModel" (change)="start()" type="number" />
-          </div>
-          <div class="col-3">
-            <div class="smallLabel">Z</div><input [disabled]="lightingType =='POINT_LIGHT'" step="0.1"
-              [(ngModel)]="directionalLight.z" #ctrl="ngModel" (change)="start()" type="number" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-3">
             <span class="smallLabel">Point</span>
           </div>
           <div class="col-3">
-            <div class="smallLabel">X</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
+            <div class="smallLabel">X</div><input step="0.1"
               [(ngModel)]="pointLight.x" #ctrl="ngModel" (change)="start()" type="number" />
           </div>
           <div class="col-3">
-            <div class="smallLabel">Y</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
+            <div class="smallLabel">Y</div><input step="0.1"
               [(ngModel)]="pointLight.y" #ctrl="ngModel" (change)="start()" type="number" />
           </div>
           <div class="col-3">
-            <div class="smallLabel">Z</div><input [disabled]="lightingType =='DIRECTIONAL_LIGHT'" step="0.1"
+            <div class="smallLabel">Z</div><input step="0.1"
               [(ngModel)]="pointLight.z" #ctrl="ngModel" (change)="start()" type="number" />
           </div>
         </div>

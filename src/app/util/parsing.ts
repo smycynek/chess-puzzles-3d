@@ -1,11 +1,11 @@
-import { BoardFile, ModelChoice, Color } from '../constants';
+import { BoardFile, Model, Color } from '../constants';
 
 export class Square {
   constructor(public file: BoardFile, public rank: number) {
   }
 }
 export class Unit {
-  constructor(public color: Color, public unit: ModelChoice) {
+  constructor(public color: Color, public unit: Model) {
   }
 }
 
@@ -24,13 +24,13 @@ const fileMap: Map<string, BoardFile> = new Map<string, BoardFile>([
   ['g', BoardFile.g],
   ['h', BoardFile.h]]);
 
-const pieceMap = new Map<string, ModelChoice>([
-  ['K', ModelChoice.King],
-  ['Q', ModelChoice.Queen],
-  ['P', ModelChoice.Pawn],
-  ['R', ModelChoice.Rook],
-  ['B', ModelChoice.Bishop],
-  ['N', ModelChoice.Knight]
+const pieceMap = new Map<string, Model>([
+  ['K', Model.King],
+  ['Q', Model.Queen],
+  ['P', Model.Pawn],
+  ['R', Model.Rook],
+  ['B', Model.Bishop],
+  ['N', Model.Knight]
 ]);
 
 export const parseSquareString = (position: string) => {

@@ -1,17 +1,15 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import fragmentShaderSrc from '../assets/shaders/fragment-shader.glsl';
 import vertexShaderSrc from '../assets/shaders/vertex-shader.glsl';
-import { BoardFile, Color, ModelChoice } from './constants';
+import { BoardFile, Color, Model } from './constants';
 import { Defaults } from './defaults';
 import { Implementation } from './implementation';
 import { GlUtil } from './lib/glUtil';
 import { DrawingInfo, OBJDoc } from './lib/objDoc';
 import { UiCallbacks } from './uiCallbacks';
-import { Model, Ortho, Triple } from './util/containers';
+import { MeshModel, Ortho, Triple } from './util/containers';
 import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
 import { parseSquareString } from './util/parsing';
-import { ThisReceiver } from '@angular/compiler';
-
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const rot13Cipher = require('rot13-cipher');
@@ -45,7 +43,6 @@ export class AppComponent implements OnInit {
         this.question = params['question'] || '';
         this.answer = rot13Cipher(params['answer'] ? params['answer'] : '');
         this.reverseQuery = this.getReverseQuery(params);
-        this.twitter = 'https://www.twitter.com';
       }
       );
   }
@@ -79,17 +76,14 @@ export class AppComponent implements OnInit {
   private shaderProgram: any = null;
 
   // Vertex data from stock obj files and uploaded files
-  public models: Map<ModelChoice, Model> = new Map<ModelChoice, Model>();
+  public models: Map<Model, MeshModel> = new Map<Model, MeshModel>();
 
   // Basic choices/toggles
-
-  public lightingType: string = Defaults.lightingType;
 
   public projectionType = Defaults.projectionType;
 
   // Basic transforms
   public translate: Triple = Defaults.translation.clone();
-  public rotation: Triple = Defaults.rotation.clone();
   public scale: Triple = Defaults.scale.clone();
 
   // View control
@@ -98,7 +92,7 @@ export class AppComponent implements OnInit {
   public look: Triple = Defaults.lookWhite.clone();
   public orbit = 0;
   // Lighting positions
-  public directionalLight: Triple = Defaults.pointLightWhite.clone();
+
   public pointLight: Triple = Defaults.pointLightWhite.clone();
 
   // Projection parameters
@@ -109,7 +103,6 @@ export class AppComponent implements OnInit {
   public answer = ''; // Constants.fischerPuzzle;
   public reverseQuery = '';
   public showAnswer = false;
-  public twitter = '';
 
   // GetWebGL context, load models, init shaders, and call start() to start rendering
   public initScreen() {
@@ -132,8 +125,8 @@ export class AppComponent implements OnInit {
           const parsedObj: OBJDoc = new OBJDoc('rook_layout.obj');
           parsedObj.parse(data, 1, true);
           const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-          const rook: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-          this.models.set(ModelChoice.Rook, rook);
+          const rook: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+          this.models.set(Model.Rook, rook);
           this.start();
         }).then(() => {
           fetch('assets/models/pawn_layout.obj')
@@ -142,8 +135,8 @@ export class AppComponent implements OnInit {
               const parsedObj: OBJDoc = new OBJDoc('pawn_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const pawn: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-              this.models.set(ModelChoice.Pawn, pawn);
+              const pawn: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(Model.Pawn, pawn);
               this.start();
             });
         }).then(() => {
@@ -153,8 +146,8 @@ export class AppComponent implements OnInit {
               const parsedObj: OBJDoc = new OBJDoc('bishop_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const bishop: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-              this.models.set(ModelChoice.Bishop, bishop);
+              const bishop: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(Model.Bishop, bishop);
               this.start();
             });
         }).then(() => {
@@ -164,8 +157,8 @@ export class AppComponent implements OnInit {
               const parsedObj: OBJDoc = new OBJDoc('king_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const king: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-              this.models.set(ModelChoice.King, king);
+              const king: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(Model.King, king);
               this.start();
             });
         }).then(() => {
@@ -175,8 +168,8 @@ export class AppComponent implements OnInit {
               const parsedObj: OBJDoc = new OBJDoc('queen_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const queen: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-              this.models.set(ModelChoice.Queen, queen);
+              const queen: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(Model.Queen, queen);
               this.start();
             });
         }).then(() => {
@@ -186,8 +179,8 @@ export class AppComponent implements OnInit {
               const parsedObj: OBJDoc = new OBJDoc('knight_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const cube: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-              this.models.set(ModelChoice.Knight, cube);
+              const cube: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(Model.Knight, cube);
               this.start();
             });
         }).then(() => {
@@ -197,8 +190,8 @@ export class AppComponent implements OnInit {
               const parsedObj: OBJDoc = new OBJDoc('square_layout.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const square: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-              this.models.set(ModelChoice.Square, square);
+              const square: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(Model.Square, square);
               this.start();
             });
         }).then(() => {
@@ -208,15 +201,15 @@ export class AppComponent implements OnInit {
               const parsedObj: OBJDoc = new OBJDoc('frame.obj');
               parsedObj.parse(data, 1, true);
               const drawingInfo: DrawingInfo = parsedObj.getDrawingInfo();
-              const frame: Model = new Model(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
-              this.models.set(ModelChoice.Frame, frame);
+              const frame: MeshModel = new MeshModel(this.gl, drawingInfo.vertices, drawingInfo.normals, drawingInfo.indices, 5);
+              this.models.set(Model.Frame, frame);
               this.start();
             });
         });
     }
   }
 
-  private draw(rank: number, file: BoardFile, color: Color, model: ModelChoice): void {
+  private draw(rank: number, file: BoardFile, color: Color, model: Model): void {
     this.gl.drawElements(this.gl.TRIANGLES, this.implementation.loadGLData(this.gl, rank, file, color, model), this.gl.UNSIGNED_SHORT, 0);
   }
 
@@ -247,14 +240,14 @@ export class AppComponent implements OnInit {
     gl.cullFace(gl.BACK);
 
     this.implementation.scaleCanvas();
-    const pawn = this.models.get(ModelChoice.Pawn);
-    const rook = this.models.get(ModelChoice.Rook);
-    const bishop = this.models.get(ModelChoice.Bishop);
-    const knight = this.models.get(ModelChoice.Knight);
-    const square = this.models.get(ModelChoice.Square);
-    const queen = this.models.get(ModelChoice.Queen);
-    const king = this.models.get(ModelChoice.King);
-    const frame = this.models.get(ModelChoice.Frame);
+    const pawn = this.models.get(Model.Pawn);
+    const rook = this.models.get(Model.Rook);
+    const bishop = this.models.get(Model.Bishop);
+    const knight = this.models.get(Model.Knight);
+    const square = this.models.get(Model.Square);
+    const queen = this.models.get(Model.Queen);
+    const king = this.models.get(Model.King);
+    const frame = this.models.get(Model.Frame);
     if (pawn && rook && knight && bishop && queen && king  && square && frame) {
       gl.clearColor(0.0, 0.0, 0.0, 0.0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BIT);
@@ -264,11 +257,11 @@ export class AppComponent implements OnInit {
           const oddRank = ((rank % 2) === 1);
           const oddFile = ((file.valueOf() % 2) === 1);
           const color = ((oddRank && oddFile) || (!oddRank && !oddFile)) ? Color.Dark : Color.Light;
-          gl.drawElements(gl.TRIANGLES, this.implementation.loadGLData(gl, rank, file, color, ModelChoice.Square), gl.UNSIGNED_SHORT, 0);
+          gl.drawElements(gl.TRIANGLES, this.implementation.loadGLData(gl, rank, file, color, Model.Square), gl.UNSIGNED_SHORT, 0);
         }
       }
       frame.activate();
-      gl.drawElements(gl.TRIANGLES,  this.implementation.loadGLData(gl, 1, BoardFile.a, Color.Frame, ModelChoice.Frame), gl.UNSIGNED_SHORT, 0);
+      gl.drawElements(gl.TRIANGLES,  this.implementation.loadGLData(gl, 1, BoardFile.a, Color.Frame, Model.Frame), gl.UNSIGNED_SHORT, 0);
 
       this.drawSetup(this.data);
 

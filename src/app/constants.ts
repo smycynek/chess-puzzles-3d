@@ -19,7 +19,7 @@ export enum BoardFile {
   g = 7,
   h = 8,
 }
-export enum ModelChoice {
+export enum Model {
   Pawn = 1,
   Knight = 2,
   Bishop = 3,
@@ -37,11 +37,7 @@ export class Constants {
 
   public static readonly ORTHO = 'ORTHO';
   public static readonly PERSPECTIVE = 'PERSPECTIVE';
-  public static readonly POINT_LIGHT = 'POINT_LIGHT';
-  public static readonly DIRECTIONAL_LIGHT = 'DIRECTIONAL_LIGHT';
 
-  public static readonly pointColor1: Vector4 = new Vector4([1.0, 1.0, 0.0, 1.0]);
-  public static readonly pointColor2: Vector4 = new Vector4([1.0, 0.0, 0.0, 1.0]);
   public static readonly lightColor: Vector3 = new Vector3([1.0, 1.0, 1.0]);
 
   public static readonly pieceColorWhite: Vector4 = new Vector4([0.75, 0.75, .75, 1]);
@@ -55,9 +51,6 @@ export class Constants {
     const data = `
 ---Static/Constant data------
 lightColor: ${Constants.lightColor.elements}
-pointColor1: ${Constants.pointColor1.elements}
-pointColor1: ${Constants.pointColor2.elements}
-
 `;
     return data;
   }
@@ -65,4 +58,8 @@ pointColor1: ${Constants.pointColor2.elements}
   public static print(): void {
     console.log(Constants.toString());
   }
+}
+
+export class Dimensions {
+  public static readonly squareWidth = 0.57;
 }

@@ -8,7 +8,6 @@ export class Defaults {
   public static readonly pointLightBlack: Triple = new Triple(2, 10, -2);
   public static readonly pointLight: Triple = new Triple(10, 40, -5);
   public static readonly translation: Triple = new Triple(0, 0, 0);
-  public static readonly rotation: Triple = new Triple(0, 0, 0);
   public static readonly scale: Triple = tripleUniform(20);
   public static readonly eyeWhite: Triple = new Triple(3, 7.0, 8.0);
   public static readonly eyeBlack: Triple = new Triple(3, 7.0, -8.0);
@@ -18,7 +17,6 @@ export class Defaults {
   public static readonly ortho = new Ortho(-7.6, 7.6, -6.4, 6.4, -40, 40);
   public static readonly perspective = new Perspective(63, 600 / 500.0, 0.1, 100);
   public static readonly projectionType: string = Constants.PERSPECTIVE;
-  public static readonly lightingType = Constants.POINT_LIGHT;
   public static readonly whiteQueenLook = new Triple(0, -2, 0);
   public static readonly whiteQueenEye = new Triple(-2, 20, 30);
   public static readonly orthoEye = new Triple(0, 10, 1);

@@ -1,7 +1,7 @@
 import { AppComponent } from './app.component';
-import { BoardFile, Color, Constants, ModelChoice } from './constants';
+import { BoardFile, Color, Constants, Dimensions, Model } from './constants';
 import { Matrix4 } from './lib/math';
-import { Triple } from './util/containers';
+import { MeshModel, Triple } from './util/containers';
 
 // Used by the main Angular AppComponent for lower-level functionality
 export class Implementation {
@@ -71,35 +71,35 @@ export class Implementation {
 
   }
 
-  private setupRotation(modelChoice: ModelChoice, color: Color): Matrix4 {
+  private setupRotation(modelType: Model, color: Color): Matrix4 {
     let rotationMatrix = new Matrix4();
-    let y = this.app.rotation.y;
-    if ((modelChoice == ModelChoice.Bishop) || (modelChoice == ModelChoice.King)) {
+    let y = 0;
+    if ((modelType == Model.Bishop) || (modelType == Model.King)) {
       y = -90;
     }
-    if ((modelChoice == ModelChoice.Knight) && (color == Color.Black)) {
+    if ((modelType == Model.Knight) && (color == Color.Black)) {
       y = 225;
     }
-    if ((modelChoice == ModelChoice.Knight) && (color == Color.White)) {
+    if ((modelType == Model.Knight) && (color == Color.White)) {
       y = -45;
     }
-    rotationMatrix = rotationMatrix.rotate(this.app.rotation.x, 1, 0, 0);
+    rotationMatrix = rotationMatrix.rotate(0, 1, 0, 0);
     rotationMatrix = rotationMatrix.rotate(y, 0, 1, 0);
     rotationMatrix = rotationMatrix.rotate(0, 0, 0, 1);
     return rotationMatrix;
   }
 
-  private position(rank: number, file: BoardFile, model: ModelChoice) {
-    const xOffset = .57;
-    const zOffset = .57;
-    let x = (xOffset * 2 * file.valueOf()) + xOffset - (1.4 * 4) - 0.3;
-    let z = (zOffset * -2 * rank) - zOffset + (1.4 * 4);
+  private position(rank: number, file: BoardFile, model: Model) {
+
+
+    let x = (Dimensions.squareWidth * 2 * file.valueOf())  + Dimensions.squareWidth  - (1.4 * 4) - 0.3;
+    let z = (Dimensions.squareWidth * -2 * rank) - Dimensions.squareWidth  + (1.4 * 4);
     let y = 0;
-    if (model == ModelChoice.Square) {
+    if (model == Model.Square) {
       y = .58;
-      z -= .6;
+      z -= Dimensions.squareWidth;
     }
-    if (model == ModelChoice.Frame) {
+    if (model == Model.Frame) {
       z = 5.15;
       x = -4.75;
       y = 0.605;
@@ -107,9 +107,9 @@ export class Implementation {
     return new Triple(x, y, z);
   }
 
-  private setupTranslation(rank: number, file: BoardFile, modelChoice: ModelChoice): Matrix4 {
+  private setupTranslation(rank: number, file: BoardFile, modelType: Model): Matrix4 {
     const translationMatrix = new Matrix4();
-    const position = this.position(rank, file, modelChoice);
+    const position = this.position(rank, file, modelType);
     translationMatrix.setTranslate(this.app.translate.x + position.x, this.app.translate.y + position.y, this.app.translate.z + position.z);
     return translationMatrix;
   }
@@ -149,14 +149,14 @@ export class Implementation {
     return location;
   }
 
-  private setupTransforms(rank: number, file: BoardFile, modelChoice: ModelChoice, color: Color): void {
+  private setTransforms(rank: number, file: BoardFile, modelType: Model, color: Color): void {
     const u_ModelMatrix = this.getUniformLocation('u_ModelMatrix');
     const u_NormalMatrix = this.getUniformLocation('u_NormalMatrix');
     const u_ViewMatrix = this.getUniformLocation('u_ViewMatrix');
     const u_ProjMatrix = this.getUniformLocation('u_ProjMatrix');
     this.app.gl.uniformMatrix4fv(u_ViewMatrix, false, this.setupView().elements);
 
-    const modelMatrix = this.setupTranslation(rank, file, modelChoice).concat(this.setupRotation(modelChoice, color)).concat(this.setupScale());
+    const modelMatrix = this.setupTranslation(rank, file, modelType).concat(this.setupRotation(modelType, color)).concat(this.setupScale());
     const normalMatrix = new Matrix4();
     normalMatrix.setInverseOf(modelMatrix);
     normalMatrix.transpose();
@@ -166,7 +166,7 @@ export class Implementation {
     this.app.gl.uniformMatrix4fv(u_ProjMatrix, false, this.setupProjection().elements);
   }
 
-  private setupLighting(color: Color): void {
+  private setColor(color: Color): void {
     const u_AmbientColor = this.getUniformLocation('u_AmbientColor');
     const u_DiffuseColor = this.getUniformLocation('u_DiffuseColor');
     const u_SpecularColor = this.getUniformLocation('u_SpecularColor');
@@ -222,17 +222,16 @@ export class Implementation {
 
   public logState(): void {
     console.log(this.app.projectionType);
-    console.log(this.app.lightingType);
     Constants.print();
   }
 
   // Main method:  Bind vertex and other buffers, set up transforms, lighting, shading, and point styles
-  public loadGLData(gl: any, rank: number, file: BoardFile, color: Color, modelChoice: ModelChoice): number {
-    const model = this.app.models.get(modelChoice);
+  public loadGLData(gl: any, rank: number, file: BoardFile, color: Color, modelType: Model): number {
+    const model: MeshModel | undefined = this.app.models.get(modelType);
     if (model) {
       model.activate();
-      this.setupTransforms(rank, file, modelChoice, color);
-      this.setupLighting(color);
+      this.setTransforms(rank, file, modelType, color);
+      this.setColor(color);
       if (model) {
         return model.indices.length;
       }

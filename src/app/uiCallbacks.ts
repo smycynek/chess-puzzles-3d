@@ -11,21 +11,11 @@ export class UiCallbacks {
     globalApp = this.app;
   }
 
-  // Methods for other basic controls
-  public setPointLightMode() {
-    this.app.lightingType = Constants.POINT_LIGHT;
-    this.app.start();
-  }
-
   public toggleSpinMode() {
     this.app.spinning = !this.app.spinning;
     this.spin();
   }
 
-  public setDirectionalLightMode() {
-    this.app.lightingType = Constants.DIRECTIONAL_LIGHT;
-    this.app.start();
-  }
 
   public toggleShow(): void {
     this.app.showAnswer = !this.app.showAnswer;
@@ -34,7 +24,6 @@ export class UiCallbacks {
   public setOrthoMode() {
     this.app.projectionType = Constants.ORTHO;
     this.app.translate = Defaults.translation.clone();
-    this.app.rotation = Defaults.rotation.clone();
     this.app.scale = Defaults.scale.clone();
     this.app.eye = Defaults.orthoEye.clone();
     this.app.pointLight = Defaults.orthoPointLight.clone();
@@ -46,7 +35,6 @@ export class UiCallbacks {
   public setPerspectiveModeWhite() {
     this.app.projectionType = Constants.PERSPECTIVE;
     this.app.translate = Defaults.translation.clone();
-    this.app.rotation = Defaults.rotation.clone();
     this.app.scale = Defaults.scale.clone();
     this.app.eye = Defaults.eyeWhite.clone();
     this.app.pointLight = Defaults.pointLightWhite.clone();
@@ -55,27 +43,25 @@ export class UiCallbacks {
     this.app.start();
   }
 
-  public setPerspectiveModeWhiteQueen() {
-    this.app.projectionType = Constants.PERSPECTIVE;
-    this.app.translate = Defaults.translation.clone();
-    this.app.rotation = Defaults.rotation.clone();
-    this.app.scale = Defaults.scale.clone();
-    this.app.pointLight = new Triple(0.2, 20, 4.0); // need better way to manage all these
-    this.app.perspective = new Perspective(5, (760.0 / 640.0), 0.1, 100);
-    this.app.look = Defaults.whiteQueenLook.clone();
-    this.app.eye = Defaults.whiteQueenEye.clone();
-    this.app.start();
-  }
-
   public setPerspectiveModeBlack() {
     this.app.projectionType = Constants.PERSPECTIVE;
     this.app.translate = Defaults.translation.clone();
-    this.app.rotation = Defaults.rotation.clone();
     this.app.scale = Defaults.scale.clone();
     this.app.eye = Defaults.eyeBlack.clone();
     this.app.pointLight = Defaults.pointLightBlack.clone();
     this.app.perspective = Defaults.perspective.clone();
     this.app.look = Defaults.lookBlack.clone();
+    this.app.start();
+  }
+
+  public setPerspectiveModeWhiteQueen() {
+    this.app.projectionType = Constants.PERSPECTIVE;
+    this.app.translate = Defaults.translation.clone();
+    this.app.scale = Defaults.scale.clone();
+    this.app.pointLight = new Triple(0.2, 20, 4.0); // need better way to manage all these
+    this.app.perspective = new Perspective(5, (760.0 / 640.0), 0.1, 100);
+    this.app.look = Defaults.whiteQueenLook.clone();
+    this.app.eye = Defaults.whiteQueenEye.clone();
     this.app.start();
   }
 

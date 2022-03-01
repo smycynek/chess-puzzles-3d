@@ -60,7 +60,7 @@ export class Perspective {
 }
 
 // Contains model data in array format ready for WebGL.
-export class Model {
+export class MeshModel {
   constructor(gl: any, vertices: Float32Array, normals: Float32Array, indices: Uint16Array, scale: number) {
     this.vertices = vertices;
     this.normals = normals;
