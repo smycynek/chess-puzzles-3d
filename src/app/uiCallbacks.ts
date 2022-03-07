@@ -1,5 +1,5 @@
 import { AppComponent } from './app.component';
-import { Constants } from './constants';
+import { BoardView, Constants } from './constants';
 import { Perspective, Triple } from './util/containers';
 
 import { Defaults } from './defaults';
@@ -33,17 +33,25 @@ export class UiCallbacks {
   }
 
   public setPerspectiveModeWhite() {
-    this.app.projectionType = Constants.PERSPECTIVE;
-    this.app.translate = Defaults.translation.clone();
-    this.app.scale = Defaults.scale.clone();
-    this.app.eye = Defaults.eyeWhite.clone();
-    this.app.pointLight = Defaults.pointLightWhite.clone();
-    this.app.perspective = Defaults.perspective.clone();
-    this.app.look = Defaults.lookWhite.clone();
+    this.setWhite();
+
+    let location = window.location.toString();
+    location = location.replace('view=b', 'view=w');
+
+    window.history.replaceState(null, 'Chess Puzzles', location);
     this.app.start();
   }
 
   public setPerspectiveModeBlack() {
+    this.setBlack();
+    let location = window.location.toString();
+    location = location.replace('view=w', 'view=b');
+
+    window.history.replaceState(null, 'Chess Puzzles', location);
+    this.app.start();
+  }
+
+  public setBlack() {
     this.app.projectionType = Constants.PERSPECTIVE;
     this.app.translate = Defaults.translation.clone();
     this.app.scale = Defaults.scale.clone();
@@ -51,9 +59,18 @@ export class UiCallbacks {
     this.app.pointLight = Defaults.pointLightBlack.clone();
     this.app.perspective = Defaults.perspective.clone();
     this.app.look = Defaults.lookBlack.clone();
-    this.app.start();
+    this.app.viewpoint = BoardView.Black;
   }
-
+  public setWhite() {
+    this.app.projectionType = Constants.PERSPECTIVE;
+    this.app.translate = Defaults.translation.clone();
+    this.app.scale = Defaults.scale.clone();
+    this.app.eye = Defaults.eyeWhite.clone();
+    this.app.pointLight = Defaults.pointLightWhite.clone();
+    this.app.perspective = Defaults.perspective.clone();
+    this.app.look = Defaults.lookWhite.clone();
+    this.app.viewpoint = BoardView.White;
+  }
   public setPerspectiveModeWhiteQueen() {
     this.app.projectionType = Constants.PERSPECTIVE;
     this.app.translate = Defaults.translation.clone();
