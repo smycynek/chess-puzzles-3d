@@ -1,7 +1,7 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import fragmentShaderSrc from '../assets/shaders/fragment-shader.glsl';
 import vertexShaderSrc from '../assets/shaders/vertex-shader.glsl';
-import { BoardFile, Color, Model } from './constants';
+import { BoardFile, BoardView, Color, Model } from './constants';
 import { Defaults } from './defaults';
 import { Implementation } from './implementation';
 import { GlUtil } from './lib/glUtil';
@@ -43,6 +43,7 @@ export class AppComponent implements OnInit {
         this.question = params['question'] || '';
         this.answer = rot13Cipher(params['answer'] ? params['answer'] : '');
         this.reverseQuery = this.getReverseQuery(params);
+        this.viewpoint = params['view'] == 'b' ? BoardView.Black : BoardView.White;
       }
       );
   }
@@ -58,11 +59,13 @@ export class AppComponent implements OnInit {
     const data = params['data'];
     const question = params['question'];
     const answer = params['answer'];
+    const view = params['view'];
     const dataParam = data ? `data=${encodeURIComponent(data)}` : '';
     const questionParam = question ? `&question=${encodeURIComponent(question)}` : '';
     const answerParam = answer ? `&answer=${encodeURIComponent(answer)}` : '';
     const editModeParam = '&editMode=true';
-    return `${base}${dataParam}${questionParam}${answerParam}${editModeParam}`;
+    const viewParam = `&view=${view}`;
+    return `${base}${dataParam}${questionParam}${answerParam}${editModeParam}${viewParam}`;
   }
 
   // This 2 fields make a very primitive Cheshire cat pattern to keep this file size smaller
@@ -103,6 +106,7 @@ export class AppComponent implements OnInit {
   public answer = ''; // Constants.fischerPuzzle;
   public reverseQuery = '';
   public showAnswer = false;
+  public viewpoint = BoardView.White;
 
   // GetWebGL context, load models, init shaders, and call start() to start rendering
   public initScreen() {
@@ -240,6 +244,17 @@ export class AppComponent implements OnInit {
     gl.cullFace(gl.BACK);
 
     this.implementation.scaleCanvas();
+
+    if (this.viewpoint === BoardView.Black) {
+      this.handler.setBlack();
+    }
+
+    let location = window.location.toString();
+    if (location.indexOf('view=') === -1) {
+      location = location + '&view=w';
+    }
+    window.history.replaceState(null, 'Chess Puzzles', location);
+
     const pawn = this.models.get(Model.Pawn);
     const rook = this.models.get(Model.Rook);
     const bishop = this.models.get(Model.Bishop);
@@ -262,6 +277,7 @@ export class AppComponent implements OnInit {
       }
       frame.activate();
       gl.drawElements(gl.TRIANGLES,  this.implementation.loadGLData(gl, 1, BoardFile.a, Color.Frame, Model.Frame), gl.UNSIGNED_SHORT, 0);
+
 
       this.drawSetup(this.data);
 

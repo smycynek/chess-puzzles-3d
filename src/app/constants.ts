@@ -30,6 +30,10 @@ export enum Model {
   Frame = 8,
 }
 
+export enum BoardView {
+  White = 1,
+  Black = 2
+}
 
 export class Constants {
 

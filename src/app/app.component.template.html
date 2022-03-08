@@ -5,11 +5,11 @@
   <div class="container section">
     <div class="row">
       <div class="col-2">
-        <input checked type="radio" name="selProjectionType" (click)="handler.setPerspectiveModeWhite()" /><span
+        <input [checked]="viewpoint === 1" type="radio" name="selProjectionType" (click)="handler.setPerspectiveModeWhite()" /><span
           class="largeLabel">White</span>
       </div>
       <div class="col-2">
-        <input type="radio" name="selProjectionType" (click)="handler.setPerspectiveModeBlack()" /><span
+        <input [checked]="viewpoint === 2" type="radio" name="selProjectionType" (click)="handler.setPerspectiveModeBlack()" /><span
           class="largeLabel">Black</span>
       </div>
     </div>
