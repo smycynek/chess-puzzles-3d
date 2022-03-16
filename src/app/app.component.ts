@@ -49,9 +49,19 @@ export class AppComponent implements OnInit {
   }
   // startup, spin control
 
-  public  getTwitterUrl() {
+  public getTwitterUrl() {
     const fullStr = encodeURIComponent(window.location.toString());
     return `${twitterBase}${headline}&url=${fullStr}&hashtags=chesspuzzle`;
+  }
+
+  public getEmailUrl() {
+    const fullStr = encodeURIComponent(window.location.toString());
+    return `mailto:?subject=${headline}&body=${fullStr}`;
+  }
+
+  public getSmsUrl() {
+    const fullStr = encodeURIComponent(window.location.toString());
+    return `sms:&body=${headline}%20${fullStr}`;
   }
 
   private getReverseQuery(params: any): string {
