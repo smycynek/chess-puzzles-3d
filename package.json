@@ -1,6 +1,6 @@
 {
-  "homepage": "https://stevenvictor.net/chess3d",
-  "name": "chess3d",
+  "homepage": "https://stevenvictor.net/chessGL",
+  "name": "chessGL",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",

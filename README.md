@@ -1,5 +1,9 @@
-# Chess-3d
+# ChessGL
 Copyright 2022 Steven Mycynek
+
+
+## Update
+New site using threeJS at https://stevenvictor.net/chess3d
 
 ## Basics
 This is the first project I made based off of my WebGL starter template:
@@ -27,8 +31,7 @@ a good-enough state to post the source.
 
 
 ## Live demo
-https://stevenvictor.net/chess3d
-
+https://stevenvictor.net/chessGL
 
 ## Credits
 * Obj parsing code (c) 2012 kanda and matsuda

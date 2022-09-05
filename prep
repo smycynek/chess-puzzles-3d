@@ -1,9 +1,9 @@
 #! /bin/bash
 
-rm chess3d.zip
+rm chessGL.zip
 
 echo "<div class='version'>version: $(date +%s)</div>" > ./src/app/version.html
-npx ng build --configuration=production --base-href /chess3d/
+npx ng build --configuration=production --base-href /chessGL/
 
-zip -r chess3d.zip chess3d
-# rm -rf chess3d
+zip -r chessGL.zip chessGL
+# rm -rf chessGL
